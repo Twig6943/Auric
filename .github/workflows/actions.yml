@@ -31,6 +31,9 @@ jobs:
         run: |
           call "C:\MyVS\VC\Auxiliary\Build\vcvars64.bat"
 
+      - name: Clone Auric
+        run: git clone https://github.com/twig6943/Auric.git
+
       - name: Build
         shell: cmd
         run: |
