@@ -21,7 +21,6 @@
 #include <thread>
 
 #define OFFSET_CLIENT_STATE_CHANGE HOOK_OFFSET(0x1416BE930)
-#define OFFSET_GET_SETTINGS_OBJECT HOOK_OFFSET(0x1403EE890)
 
 Kyber::Program* g_program;
 
@@ -102,7 +101,6 @@ DWORD WINAPI Program::InitializationThread()
 
 HookTemplate program_hook_offsets[] = {
     { OFFSET_CLIENT_STATE_CHANGE, ClientStateChangeHk },
-    { OFFSET_GET_SETTINGS_OBJECT, GetSettingsObjectHk },
 };
 
 void Program::InitializeGameHooks()
@@ -149,9 +147,4 @@ __int64 ClientStateChangeHk(__int64 inst, ClientState currentClientState, Client
     return trampoline(inst, currentClientState, lastClientState);
 }
 
-__int64 GetSettingsObjectHk(__int64 settingsManager, __int64* a2, const char** identifier)
-{
-    static const auto trampoline = HookManager::Call(GetSettingsObjectHk);
-    return trampoline(settingsManager, a2, identifier);
-}
 } // namespace Kyber

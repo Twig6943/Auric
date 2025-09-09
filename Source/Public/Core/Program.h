@@ -5,7 +5,7 @@
 #include <Core/Server.h>
 #include <SDK/TypeInfo.h>
 #include <API/APIService.h>
-
+#include <Hook/Func.h>
 
 #include <Windows.h>
 
@@ -13,10 +13,12 @@
 #define OFFSET_GLOBAL_SETTINGS_MANAGER 0x1446B4130
 //#define OFFSET_GET_CLIENT_INSTANCE 0x14659DE50
 
+
 namespace Kyber
 {
 __int64 ClientStateChangeHk(__int64 a1, ClientState currentClientState, ClientState lastClientState);
-__int64 GetSettingsObjectHk(__int64 settingsManager, __int64* a2, const char** identifier);
+
+TL_DECLARE_FUNC(0x1403EE890, __int64, Settings_GetObject, __int64 settingsManager, __int64* a2, const char** identifier);
 
 class Program
 {
@@ -27,13 +29,14 @@ public:
     DWORD WINAPI InitializationThread();
     void InitializeGameHooks();
 
+
     template<typename T>
     T* GetSettingsObject(const char* identifier)
     {
         __int64 result[2]; 
         __int64 settingsManagerPtr = *reinterpret_cast<__int64*>(OFFSET_GLOBAL_SETTINGS_MANAGER);
 
-        GetSettingsObjectHk(settingsManagerPtr + 0x90, result, &identifier);
+        Settings_GetObject(settingsManagerPtr + 0x90, result, &identifier);
 
         return reinterpret_cast<T*>(*reinterpret_cast<__int64*>(result[0] + 0x8));
     }
