@@ -24,7 +24,15 @@ public:
     char pad_001C[212];                // 0x001C
     class ServerPlayer* m_players[64]; // 0x00F0
     char pad_02F0[1276];               // 0x02F0
-};                                     // Size: 0x07EC
+};  
+// Size: 0x07EC
+struct ServerSpawnOverrides
+{
+    LevelSetup* levelSetup;
+    __int64 socketManager;
+    __int64 connectionCreator;
+    __int64 peerCreator;
+};
 
 class ServerPlayer
 {

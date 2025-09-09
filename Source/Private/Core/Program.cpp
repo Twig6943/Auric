@@ -20,8 +20,8 @@
 #include <chrono>
 #include <thread>
 
-#define OFFSET_CLIENT_STATE_CHANGE HOOK_OFFSET(0x140A8C7A0)
-#define OFFSET_GET_SETTINGS_OBJECT HOOK_OFFSET(0x1401F7BD0)
+#define OFFSET_CLIENT_STATE_CHANGE HOOK_OFFSET(0x1416BE930)
+#define OFFSET_GET_SETTINGS_OBJECT HOOK_OFFSET(0x1403EE890)
 
 Kyber::Program* g_program;
 
@@ -75,10 +75,13 @@ DWORD WINAPI Program::InitializationThread()
 
     InitializeGameHooks();
 
-    m_api = new KyberAPIService();
+    //m_api = new KyberAPIService();
     g_renderer = new Renderer();
     m_server = new Server();
 
+    //g_program->m_server->Start("levels/Root/Root", "Debug_Green_WateringHole", 40, SocketSpawnInfo(false, "", ""));
+    GameSettings* gameSettings = Settings<GameSettings>("Game");
+    KYBER_LOG(LogLevel::Debug, "GAME SETTINGS: " << std::hex << gameSettings);
     KYBER_LOG(LogLevel::Info, "Initialized Kyber v" << KYBER_VERSION);
     KYBER_LOG(LogLevel::Warning, "Press [INSERT] on your Keyboard to use Kyber!");
 
@@ -115,7 +118,7 @@ __int64 ClientStateChangeHk(__int64 inst, ClientState currentClientState, Client
 {
     static const auto trampoline = HookManager::Call(ClientStateChangeHk);
     g_program->m_clientState = currentClientState;
-    KYBER_LOG(LogLevel::DebugPlusPlus, "Client state changed to " << currentClientState);
+    KYBER_LOG(LogLevel::Debug, "Client state changed to " << currentClientState << "|| inst: " << std::hex << inst);
     Server* server = g_program->m_server;
     if (currentClientState == ClientState_Startup)
     {
@@ -124,8 +127,8 @@ __int64 ClientStateChangeHk(__int64 inst, ClientState currentClientState, Client
             server->Stop();
 
             GameSettings* gameSettings = Settings<GameSettings>("Game");
-            gameSettings->Level = "Levels/FrontEnd/FrontEnd";
-            gameSettings->DefaultLayerInclusion = "";
+            gameSettings->Level = "levels/Boot/Boot";
+            gameSettings->DefaultLayerInclusion = "StartupMode=Game";
         }
         else
         {
@@ -146,9 +149,9 @@ __int64 ClientStateChangeHk(__int64 inst, ClientState currentClientState, Client
     return trampoline(inst, currentClientState, lastClientState);
 }
 
-__int64 GetSettingsObjectHk(__int64 inst, const char* identifier)
+__int64 GetSettingsObjectHk(__int64 settingsManager, __int64* a2, const char** identifier)
 {
     static const auto trampoline = HookManager::Call(GetSettingsObjectHk);
-    return trampoline(inst, identifier);
+    return trampoline(settingsManager, a2, identifier);
 }
 } // namespace Kyber

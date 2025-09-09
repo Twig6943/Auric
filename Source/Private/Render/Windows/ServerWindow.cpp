@@ -14,13 +14,14 @@
 namespace Kyber
 {
 ServerWindow::ServerWindow() {
-    g_program->m_api->GetProxies([&](std::optional<std::vector<KyberProxy>> kyberProxies) {
+    /* g_program->m_api->GetProxies([&](std::optional<std::vector<KyberProxy>> kyberProxies) {
         std::sort(kyberProxies->begin(), kyberProxies->end(), [](const KyberProxy& a, const KyberProxy& b) {
             return a.ping < b.ping;
         });
         kyberProxies->push_back(KyberProxy{ "", "", "", "No Proxy", 0 });
         m_proxies = kyberProxies;
-    });
+    }) */
+        ;
 }
 
 bool ServerWindow::IsEnabled()
@@ -53,7 +54,7 @@ void ServerWindow::Draw()
 {
     ImGui::Begin("SERVER SETTINGS", &m_isEnabled, ImGuiWindowFlags_AlwaysAutoResize);
     GameSettings* gameSettings = Settings<GameSettings>("Game");
-    ImGui::Text("GAME MODE:");
+    ImGui::Text("START POINT:");
     ImGui::SameLine();
     ImGui::Text(gameSettings->DefaultLayerInclusion);
     ImGui::Text("LEVEL:");
@@ -64,7 +65,7 @@ void ServerWindow::Draw()
     {
         static GameMode currentMode = { "", "Mode", {}, {} };
         static GameLevel currentLevel = { "", "Level" };
-        static KyberProxy currentProxy = m_proxies->at(0);
+        //static KyberProxy currentProxy = m_proxies->at(0);
         if (ImGui::BeginCombo("##modeCombo", currentMode.name))
         {
             for (int n = 0; n < IM_ARRAYSIZE(s_game_modes); n++)
@@ -100,7 +101,7 @@ void ServerWindow::Draw()
             ImGui::EndCombo();
         }
 
-        if (m_proxies && ImGui::BeginCombo("##proxyCombo", currentProxy.displayName.c_str()))
+        /* if (m_proxies && ImGui::BeginCombo("##proxyCombo", currentProxy.displayName.c_str()))
         {
             for (int i = 0; i < m_proxies->size(); i++)
             {
@@ -116,7 +117,7 @@ void ServerWindow::Draw()
                 }
             }
             ImGui::EndCombo();
-        }
+        }*/
         static int maxPlayers = 40;
         ImGui::SliderInt("Max Players", &maxPlayers, 2, 64);
         if (ImGui::IsItemHovered())
@@ -136,8 +137,7 @@ void ServerWindow::Draw()
         {
             if (strcmp(currentMode.name, "Mode") != 0 && strcmp(currentLevel.name, "Level") != 0)
             {
-                g_program->m_server->Start(
-                    currentLevel.level, currentMode.mode, maxPlayers, SocketSpawnInfo(currentProxy.displayName != "No Proxy", currentProxy.ip.c_str(), "Test Server"));
+                g_program->m_server->Start("levels/Root/Root", "Dungeon_007_Boss", 40, SocketSpawnInfo(false, "", ""));
             }
             else
             {
@@ -155,7 +155,7 @@ void ServerWindow::Draw()
             errorTime--;
         }
     }
-    else if (g_program->m_clientState == ClientState_Ingame)
+    /* else if (g_program->m_clientState == ClientState_Ingame)
     {
         ImGui::Text("Leave this game to start a new one.");
         ImGui::Separator();
@@ -222,6 +222,7 @@ void ServerWindow::Draw()
         ImGui::Text("Settings will be available once");
         ImGui::Text("the game is fully loaded.");
     }
+    */
     ImGui::End();
 }
 } // namespace Kyber

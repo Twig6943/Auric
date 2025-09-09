@@ -56,6 +56,7 @@ public:
     }
 
     SocketManager* m_socketManager;
+    SocketManager* m_clientSocketManager;
     ISocket* m_natClient;
     ServerPlayerManager* m_playerManager;
     SocketSpawnInfo m_socketSpawnInfo;

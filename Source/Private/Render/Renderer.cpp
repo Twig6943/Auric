@@ -294,13 +294,13 @@ Renderer::Renderer()
     desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     desc.BufferCount = 1;
 
-    KYBER_LOG(LogLevel::Debug, "Attempting to find Battlefront window");
+    KYBER_LOG(LogLevel::Debug, "Attempting to find Anthem window");
 
-    hWnd = FindWindow("Frostbite", "STAR WARS Battlefront II");
+    hWnd = FindWindow(nullptr, "Anthem™");
 
     if (!hWnd)
     {
-        ErrorUtils::ThrowException("Failed to find Battlefront window.");
+        ErrorUtils::ThrowException("Failed to find Anthem window.");
     }
 
     desc.OutputWindow = hWnd;
