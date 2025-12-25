@@ -1,3 +1,4 @@
+.
 > [!WARNING]
 > This Injects now! though starting a server will kill it, reason being that some offsets are wrong.
 > The base of this is NOT MY CODE, it is a fork of Kyber modified to run on GW1
